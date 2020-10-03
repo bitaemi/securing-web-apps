@@ -1,0 +1,13 @@
+<h1 mat-dialog-title>Add Project</h1>
+<div mat-dialog-content>
+    <mat-form-field style="width:300px">
+        <input matInput [(ngModel)]="data.name" cdkFocusInitial required>
+        <mat-error *ngIf="error">{{error}}</mat-error>
+    </mat-form-field>
+</div>
+<div mat-dialog-actions layout="row">
+    <button mat-button (click)="cancel()" color="accent">Cancel</button>
+    <span style="flex: 1 1 auto"></span>
+    <button mat-button (click)="add()" color="primary">Add</button>
+
+</div>

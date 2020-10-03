@@ -1,0 +1,20 @@
+<h1 mat-dialog-title>Add Project User</h1>
+<div mat-dialog-content>
+    <mat-form-field style="width:300px">
+        <mat-select placeholder="User" [(value)]="selectedUser" required>
+            <mat-option *ngFor="let user of unassociatedUsers" [value]="user">{{user.firstName}} {{user.lastName}}</mat-option>
+        </mat-select>
+    </mat-form-field>
+    <mat-form-field style="width:300px">
+        <mat-select placeholder="Permission" [(value)]="permission">
+            <mat-option value="View">View</mat-option>
+            <mat-option value="Edit">Edit</mat-option>
+        </mat-select>
+    </mat-form-field>
+</div>
+<div class="mat-body-1" style="color:#E91E63">{{error}}</div>
+<div mat-dialog-actions layout="row">
+    <button mat-button (click)="cancel()" color="accent">Cancel</button>
+    <span style="flex: 1 1 auto"></span>
+    <button mat-button (click)="add()" color="primary">Add</button>
+</div>

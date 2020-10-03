@@ -1,0 +1,8 @@
+POST https://login.microsoftonline.com/organizations/oauth2/v2.0/token
+Content-Type: application/x-www-form-urlencoded
+
+client_id=andHeareIsTheValueFromAzureActiveDirectory
+&redirect_uri=http://localhost
+&scope=https://graph.microsoft.com/user.read
+&grant_type=authorization_code
+&code=theCodeThatIReceivedInTheQuesryParamsOfTheRedirectURL

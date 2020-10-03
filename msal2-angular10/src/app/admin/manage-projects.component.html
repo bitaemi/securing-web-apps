@@ -1,0 +1,38 @@
+<div class="error-text">{{error}}</div>
+
+<div class="table-container mat-elevation-z8">
+
+    <mat-table [dataSource]="dataSource">
+
+        <!-- Project Name Column -->
+        <ng-container matColumnDef="name">
+            <mat-header-cell *matHeaderCellDef>Project</mat-header-cell>
+            <mat-cell *matCellDef="let project" [style.flex]="'flex'">
+                <div class="project-name">
+                    <strong>{{project.name}}</strong>
+                </div>
+            </mat-cell>
+        </ng-container>
+
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+            <mat-header-cell *matHeaderCellDef></mat-header-cell>
+            <mat-cell *matCellDef="let project" [style.flex]="'0 0 200px'">
+                <div class="action-button-wrapper">
+                    <button title="Manage Permissions" mat-raised-button color="primary" class="list-action" routerLink="manage-permissions/{{project.id}}">
+                        <i class="material-icons">lock</i>
+                    </button>
+                    <button title="Delete Project" mat-raised-button color="warn" class="list-action" (click)="deleteProject(project)">
+                        <i class="material-icons">delete</i>
+                    </button>
+                </div>
+            </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+    <button title="Add Project" mat-raised-button class="add-button mat-fab" color="primary" (click)="addProject()">
+        <i class="material-icons">add</i>
+    </button>
+</div>

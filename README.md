@@ -214,8 +214,65 @@ maltegoce # run Maltego Community edition  embeded
 - select grouped nodes from the graphic results and you will see all the values (eg. emails for those nodes)
 
 # [Securing Angular Apps with OpenID Connect and OAuth 2](#securing-angular-apps-with-openid-connect-and-oauth-2)
-- [Setup + Run App](#setup--run-app)
+- [MSAL2 in Angular10 Implementation](./msal2-angular10/README.md)
+
+## Authorization Code Flow Demo with Http VScode
+
+[https://www.youtube.com/watch?v=ly5dxX5z_ok&list=PLhOe7XHlsIfFXCnP7_4pDGlcyJ5l3GUqY&index=9](https://www.youtube.com/watch?v=ly5dxX5z_ok&list=PLhOe7XHlsIfFXCnP7_4pDGlcyJ5l3GUqY&index=9)
+
+[Code in dir ./Autentication-Flows-Http\get.http](./Autentication-Flows-Http\get.http)
+Install REST Client Extention in orger to make GET?POST API request without the need of Postman
+In VS Code -> View -> Toggle Wordwrapp
+
+This basicaly includes authenticating with IDToken and after that getting the authorization token(accessToken) to auth in B2C. For dev pursoses we use localhost but the RedirectURI should be of https
+get1.http:
+
+```js
+GET https://login.microsoftofline.com/organizations/oauth2/v2.0/authorize?client_id=andHeareIsTheValueFromAzureActiveDirectory..
+&response_type=code
+&redirect_uri=http://localhost
+&response_mode=query
+&scope=https://graph.microsoft.com/user.read
+```
+instead of /organizations/ can be /common/ or the tenant id that you can find in portal.azure.com -> your registered app config
+
+If we Run GET request in VS Code, will get a 200 OK and the HTML page of the MS sign-in
+Thus, if you put that curl in browser and you land on MS login page, where if you consent and login you get redirected to the localhost, with a query string like ?code= 0.AAGGGFSGHH....&session_state=hhdgjg-gfgs...):
+
+```js
+http://localhost/?code=theCodeThatIReceivedInTheQuesryParamsOfTheRedirectURL&session_state=hhdgjg-gfgs...
+```
+This code we can use when we go get our token:
+
+```js
+POST https://login.microsoftonline.com/organizations/oauth2/v2.0/token
+Content-Type: application/x-www-form-urlencoded
+
+client_id=andHeareIsTheValueFromAzureActiveDirectory
+&redirect_uri=http://localhost
+&scope=https://graph.microsoft.com/user.read
+&grant_type=authorization_code
+&code=theCodeThatIReceivedInTheQuesryParamsOfTheRedirectURL
+```
+If I run this POST I get the Bearer Token that I can further use to access the diferent APIs `theBearerTokenthatIcanfurtherusetoaccessdiferentAPIs`
+In [aka.ms/ge](https://aka.ms/ge) it opens https://developer.microsoft.com/en-us/graph/graph-explorer
+
+To get profile photo use: https://graph.microsoft.com/v1.0/me/photo/$value API
+```js
+GET https://graph.microsoft.com/v1.0/me/photo/$value
+Authorization: Bearer theBearerTokenthatIcanfurtherusetoaccessdiferentAPIs
+```
+OAuth 2.0 Authorization code flow (with PKCE). The authorization code flow allows the application to exchange an authorization code for ID tokens to represent the authenticated user and Access tokens needed to call protected APIs. In addition, it returns Refresh tokens that provide long-term access to resources on behalf of users without requiring interaction with those users. This is the recommended approach.
+
+[https://docs.microsoft.com/en-us/azure/active-directory/develop/authentication-flows-app-scenarios](https://docs.microsoft.com/en-us/azure/active-directory/develop/authentication-flows-app-scenarios)
+
+[More Secure JavaScript Single-Page Applications with MSAL 2.0 and OAuth 2.0 Auth Code Flow with PKCE](https://www.youtube.com/watch?v=YxAwGAnmNqQ)
+
 ## [Angular App Security Big Picture](#angular-app-security-big-picture)
+You can follow MS Azure Active Directory docs, videos and posts about configuring your app registrations. You will find details about all the above.
+
+[How to authenticate users of your app with MS identity platform](https://www.youtube.com/watch?v=Mtpx_lpfRLs&list=PLhOe7XHlsIfFXCnP7_4pDGlcyJ5l3GUqY&index=6)
+
 - [Security Design Considerations](#security-design-considerations)
 - [Client vs. Server Security](#client-vs-server-security)
 - [Angular App Security Architecture](#angular-app-security-architecture)
