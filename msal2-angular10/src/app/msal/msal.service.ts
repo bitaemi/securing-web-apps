@@ -36,9 +36,13 @@ export class MsalService implements IMsalService {
         return from(this.msalInstance.acquireTokenPopup(request));
     }
     acquireTokenRedirect(request: RedirectRequest): Observable<void> {
+        console.log('acquire token redirect'+ JSON.stringify(request), null, '\t');
+
         return from(this.msalInstance.acquireTokenRedirect(request));
     }
     acquireTokenSilent(silentRequest: SilentRequest): Observable<AuthenticationResult> {
+        console.log('acquire token silent'+ JSON.stringify(silentRequest), null, '\t');
+
         return from(this.msalInstance.acquireTokenSilent(silentRequest));
     }
     getAccountByUsername(userName: string): AccountInfo {
@@ -48,18 +52,25 @@ export class MsalService implements IMsalService {
         return this.msalInstance.getAllAccounts();
     }
     handleRedirectObservable(): Observable<AuthenticationResult> {
+        // console.log('handele redirect');
+
         return from(this.msalInstance.handleRedirectPromise());
     }
     loginPopup(request?: AuthorizationUrlRequest): Observable<AuthenticationResult> {
         return from(this.msalInstance.loginPopup(request));
     }
     loginRedirect(request?: RedirectRequest): Observable<void> {
+        console.log('login'+ JSON.stringify(request), null, '\t');
+
         return from(this.msalInstance.loginRedirect(request));
     }
     logout(logoutRequest?: EndSessionRequest): Observable<void> {
+        console.log('logout'+ JSON.stringify(logoutRequest), null, '\t');
+
         return from(this.msalInstance.logout(logoutRequest));
     }
     ssoSilent(request: AuthorizationUrlRequest): Observable<AuthenticationResult> {
+        console.log('SSO silet'+ JSON.stringify(request), null, '\t');
         return from(this.msalInstance.ssoSilent(request));
     }
 

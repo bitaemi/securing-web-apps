@@ -5,6 +5,7 @@ import { MsalGuardConfiguration } from './msal/msal.guard.config';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 import { EventMessage, EventType, InteractionType } from '@azure/msal-browser';
+import { MsalInterceptorConfig } from './msal/msal.interceptor.config';
 
 @Component({
   selector: 'app-root',
@@ -47,7 +48,12 @@ export class AppComponent implements OnInit, OnDestroy {
       this.authService.loginPopup({...this.msalGuardConfig.authRequest})
         .subscribe(() => this.checkAccount());
     } else {
-      this.authService.loginRedirect({...this.msalGuardConfig.authRequest});
+      
+      this.authService.loginRedirect({
+        scopes: ['api://your_app_id/access_as_user'],
+        extraScopesToConsent:['api://your_app_id/access_as_user'],
+        prompt: 'consent',
+      });
     }
   }
 
@@ -58,5 +64,31 @@ export class AppComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this._destroying$.next(null);
     this._destroying$.complete();
+  }
+
+ generateMSALInterceptorConfigFactory(): MsalInterceptorConfig {
+    const protectedResourceMap = new Map<string, Array<string>>();
+    protectedResourceMap.set('api://your_app_id/access_as_user', ['access_as_user']);
+    console.log(JSON.stringify(protectedResourceMap), null, '\t');
+  
+    return {
+      interactionType: InteractionType.Redirect,
+      protectedResourceMap,
+      authRequest: {
+        scopes: ['access_as_user'],
+      extraScopesToConsent:['api://your_app_id/access_as_user'],
+      // responseMode?: ResponseMode;
+      // codeChallenge?: string;
+      // codeChallengeMethod?: string;
+      // state?: string;
+        prompt: 'login',
+      // account?: AccountInfo;
+      // loginHint?: string;
+      // domainHint?: string;
+      // sid?: string;
+      // extraQueryParameters?: StringDict;
+      // nonce?: string;
+      }
+    };
   }
 }

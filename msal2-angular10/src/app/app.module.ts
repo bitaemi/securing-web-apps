@@ -22,7 +22,7 @@ function MSALInstanceFactory(): IPublicClientApplication {
   return new PublicClientApplication({
     auth: {
       clientId: 'enter_your_client_id_here',
-      authority: 'https://login.microsoftonline.com/enter_tenant_id_here',
+      authority: 'https://login.microsoftonline.com/enter_your_tenant_id_here',
       redirectUri: 'http://localhost:4200',
     }
   });
@@ -30,13 +30,14 @@ function MSALInstanceFactory(): IPublicClientApplication {
 
 function MSALInterceptorConfigFactory(): MsalInterceptorConfig {
   const protectedResourceMap = new Map<string, Array<string>>();
-  protectedResourceMap.set('api://eb7...', ['customscope']);
+  protectedResourceMap.set('api://your_app_id/access_as_user', ['access_as_user']);
+  console.log(JSON.stringify(protectedResourceMap), null, '\t');
 
   return {
-    interactionType: InteractionType.Popup,
+    interactionType: InteractionType.Redirect,
     protectedResourceMap,
     authRequest: {
-      scopes: ['openid', 'customscope'],
+      scopes: ['access_as_user'],
     // claims?: string;
     // authority?: string;
     // correlationId?: string;
@@ -44,7 +45,7 @@ function MSALInterceptorConfigFactory(): MsalInterceptorConfig {
     // resourceRequestUri?: string;
     // authenticationScheme?: AuthenticationScheme;
     // redirectUri?: string;
-    extraScopesToConsent:['api://eb7.../customscope'],
+    extraScopesToConsent:['api://your_app_id/access_as_user'],
     // responseMode?: ResponseMode;
     // codeChallenge?: string;
     // codeChallengeMethod?: string;
@@ -88,7 +89,7 @@ function MSALInterceptorConfigFactory(): MsalInterceptorConfig {
     {
       provide: MSAL_GUARD_CONFIG,
       useValue: {
-        interactionType: InteractionType.Popup
+        interactionType: InteractionType.Redirect
       } as MsalGuardConfiguration
     },
     {

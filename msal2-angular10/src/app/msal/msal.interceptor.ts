@@ -22,6 +22,8 @@ export class MsalInterceptor implements HttpInterceptor {
 
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         const scopes = this.getScopesForEndpoint(req.url);
+        console.log('Scopes is: ', JSON.stringify(scopes), null, '\t');
+
         // alert(JSON.stringify(scopes));
         const account = this.authService.getAllAccounts()[0];
 
@@ -37,7 +39,28 @@ export class MsalInterceptor implements HttpInterceptor {
                         return this.authService.acquireTokenPopup({...this.msalInterceptorConfig.authRequest, scopes});
                     }
                     const redirectStartPage = window.location.href;
-                    this.authService.acquireTokenRedirect({...this.msalInterceptorConfig.authRequest, scopes, redirectStartPage});
+                    const kk = {scopes: ['api://your_app_id/access_as_user', 'access_as_user'],
+                    // claims?: string;
+                    // authority?: string;
+                    // correlationId?: string;
+                    // resourceRequestMethod?: string;
+                    // resourceRequestUri?: string;
+                    // authenticationScheme?: AuthenticationScheme;
+                    // redirectUri?: string;
+                    extraScopesToConsent:['api://your_app_id/access_as_user'],
+                    // responseMode?: ResponseMode;
+                    // codeChallenge?: string;
+                    // codeChallengeMethod?: string;
+                    // state?: string;
+                      prompt: 'login',
+                    // account?: AccountInfo;
+                    // loginHint?: string;
+                    // domainHint?: string;
+                    // sid?: string;
+                    extraQueryParameters: {scope: 'api://your_app_id/access_as_user'}
+                    // nonce?: string;
+                }
+                    this.authService.acquireTokenRedirect({...kk, redirectStartPage});
                     return EMPTY;
                 }),
                 switchMap((result: AuthenticationResult) => {
@@ -53,6 +76,10 @@ export class MsalInterceptor implements HttpInterceptor {
 
     private getScopesForEndpoint(endpoint: string): Array<string>|null {
         const protectedResourcesArray = Array.from(this.msalInterceptorConfig.protectedResourceMap.keys());
+        // protectedResourceMap.set('api://your_app_id', ['access_as_user']);
+        console.log(JSON.stringify(protectedResourcesArray), null,'\t');
+        console.log(protectedResourcesArray);
+
         const keyMatchesEndpointArray = protectedResourcesArray.filter(key => {
             const minimatch = new Minimatch(key);
             return minimatch.match(endpoint) || endpoint.indexOf(key) > -1;
@@ -60,7 +87,7 @@ export class MsalInterceptor implements HttpInterceptor {
 
         // process all protected resources and send the first matched resource
         if (keyMatchesEndpointArray.length > 0) {
-            const keyForEndpoint = keyMatchesEndpointArray[0];
+            const keyForEndpoint = keyMatchesEndpointArray[4] || keyMatchesEndpointArray[3] || keyMatchesEndpointArray[0];
             if (keyForEndpoint) {
                 return this.msalInterceptorConfig.protectedResourceMap.get(keyForEndpoint);
             }
